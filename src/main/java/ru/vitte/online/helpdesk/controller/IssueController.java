@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.vitte.online.helpdesk.dto.IncomingIssueDto;
 import ru.vitte.online.helpdesk.dto.IssueDto;
 import ru.vitte.online.helpdesk.mock.SecurityModuleMock;
-import ru.vitte.online.helpdesk.service.IssueService;
+import ru.vitte.online.helpdesk.service.api.IssueService;
 
 import java.util.List;
 

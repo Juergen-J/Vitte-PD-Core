@@ -16,11 +16,11 @@ public class IssueCommentEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(length = 2000)
     private String text;
     @OneToOne
     @JoinColumn(name = "file_id")
-    private FileEntity fileEntity;
+    private FileEntity file;
 
 //    @ManyToOne
 //    @JoinColumn(name = "issue_id", nullable = false)

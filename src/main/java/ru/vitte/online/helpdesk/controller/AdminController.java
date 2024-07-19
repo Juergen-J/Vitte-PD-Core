@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.vitte.online.helpdesk.dto.PersonDto;
 import ru.vitte.online.helpdesk.mock.SecurityModuleMock;
-import ru.vitte.online.helpdesk.service.UserService;
+import ru.vitte.online.helpdesk.service.api.UserService;
 
 @RestController
 @RequiredArgsConstructor

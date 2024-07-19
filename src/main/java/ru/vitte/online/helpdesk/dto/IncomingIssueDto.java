@@ -9,6 +9,8 @@ import java.util.List;
 @Data
 public class IncomingIssueDto {
 
+    private Long id;
+
     private String title;
 
     private IssueCommentDto issueComment;

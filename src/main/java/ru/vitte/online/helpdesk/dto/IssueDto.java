@@ -24,7 +24,7 @@ public class IssueDto {
 
     private PersonDto employee;
 
-    private List<IssueCommentDto> issueCommentEntity;
+    private List<IssueCommentDto> issueComment;
 
     private LocalDateTime createdAt;
 

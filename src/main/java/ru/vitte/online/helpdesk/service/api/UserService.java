@@ -1,8 +1,6 @@
-package ru.vitte.online.helpdesk.service;
+package ru.vitte.online.helpdesk.service.api;
 
 import ru.vitte.online.helpdesk.dto.PersonDto;
-
-import java.util.List;
 
 public interface UserService {
 

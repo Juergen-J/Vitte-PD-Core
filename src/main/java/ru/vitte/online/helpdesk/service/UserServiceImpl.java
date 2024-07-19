@@ -2,11 +2,11 @@ package ru.vitte.online.helpdesk.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
 import ru.vitte.online.helpdesk.dto.PersonDto;
 import ru.vitte.online.helpdesk.mapper.PersonMapper;
 import ru.vitte.online.helpdesk.repository.PersonRepository;
+import ru.vitte.online.helpdesk.service.api.UserService;
 
 @Service
 @RequiredArgsConstructor

@@ -22,6 +22,8 @@ public interface IssueMapper {
 
     IssueCommentEntity mapIssueComment(IssueCommentDto issueCommentDto);
 
+    IssueCommentDto mapIssueComment(IssueCommentEntity issueCommentEntity);
+
     @Named("wrapList")
     default List<IssueCommentEntity> wrapList(IssueCommentDto object) {
         return List.of(mapIssueComment(object));

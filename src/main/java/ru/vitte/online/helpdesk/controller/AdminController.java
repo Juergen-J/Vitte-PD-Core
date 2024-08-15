@@ -1,6 +1,7 @@
 package ru.vitte.online.helpdesk.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import ru.vitte.online.helpdesk.service.api.UserService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/helpdesk/admin")
+@Slf4j
 public class AdminController {
 
     private final UserService userService;

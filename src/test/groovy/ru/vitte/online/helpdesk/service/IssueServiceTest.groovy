@@ -1,0 +1,158 @@
+package ru.vitte.online.helpdesk.service
+
+import ru.vitte.online.helpdesk.dto.IssueDto
+import ru.vitte.online.helpdesk.entity.IssueEntity
+import ru.vitte.online.helpdesk.entity.enums.Role
+import ru.vitte.online.helpdesk.entity.enums.Status
+import ru.vitte.online.helpdesk.mq.NewIssuePublisher
+import ru.vitte.online.helpdesk.repository.IssueRepository
+import ru.vitte.online.helpdesk.repository.PersonRepository
+import utils.TestBase
+
+class IssueServiceTest extends TestBase {
+
+    def issueRepository = Mock(IssueRepository)
+    def personRepository = Mock(PersonRepository)
+    def newIssuePublisher = Mock(NewIssuePublisher)
+
+    IssueServiceImpl issueService = new IssueServiceImpl(
+            issueRepository,
+            personRepository,
+            newIssuePublisher
+    )
+
+    def "createIssue should create and return IssueDto"() {
+        given:
+        long persId = TEST_PERS_ID
+        def issueDto = incomingIssueDto()
+        def personEntity = personEntity()
+        def savedIssueEntity = issueEntity(status: Status.NEW)
+
+        when:
+        IssueDto result = issueService.createIssue(persId, issueDto)
+
+        then:
+        1 * personRepository.findById(persId) >> Optional.of(personEntity)
+        1 * issueRepository.save(_) >> { IssueEntity issue ->
+            assert issue.getUser() == personEntity
+            assert issue.getStatus() == Status.NEW
+            savedIssueEntity
+        }
+        1 * newIssuePublisher.sendToTopic(_) >> { IssueDto dto ->
+            assert dto.id == savedIssueEntity.id
+        }
+
+        result.id == savedIssueEntity.id
+        result.status == Status.NEW
+    }
+
+    def "getIssueById should return IssueDto for valid user"() {
+        given:
+        long persId = 1L
+        long issueId = 1L
+        boolean isEmployee = false
+        def personEntity = personEntity(id: persId)
+        def issueEntity = issueEntity(id: issueId, user: personEntity)
+
+        when:
+        IssueDto result = issueService.getIssueById(persId, issueId, isEmployee)
+
+        then:
+        1 * issueRepository.findById(issueId) >> Optional.of(issueEntity)
+
+        result.id == issueEntity.id
+    }
+
+    def "getAllIssues should return list of IssueDto for a user"() {
+        given:
+        long persId = 1L
+        boolean isEmployee = false
+        def personEntity = personEntity(id: persId)
+        def issueEntity1 = issueEntity(id: 1L, user: personEntity)
+        def issueEntity2 = issueEntity(id: 2L, user: personEntity)
+
+        when:
+        List<IssueDto> result = issueService.getAllIssues(persId, isEmployee)
+
+        then:
+        1 * personRepository.findById(persId) >> Optional.of(personEntity)
+        1 * issueRepository.findByUser(personEntity) >> [issueEntity1, issueEntity2]
+
+        result.size() == 2
+        result*.id.containsAll([issueEntity1.id, issueEntity2.id])
+    }
+
+    def "updateIssue should update issue and return updated IssueDto"() {
+        given:
+        long persId = 1L
+        long issueId = 1L
+        def issueDto = incomingIssueDto()
+        def personEntity = personEntity(id: persId, role: Role.EMPLOYEE)
+        def issueEntity = issueEntity(id: issueId)
+
+        when:
+        IssueDto result = issueService.updateIssue(persId, issueId, issueDto)
+
+        then:
+        1 * personRepository.findById(persId) >> Optional.of(personEntity)
+        1 * issueRepository.findById(issueId) >> Optional.of(issueEntity)
+        1 * issueRepository.save(_) >> { IssueEntity issue ->
+            assert issue.getEmployee() == personEntity
+            assert issue.getStatus() == Status.IN_PROGRESS
+            issueEntity
+        }
+
+        result.id == issueEntity.id
+        result.status == Status.IN_PROGRESS
+    }
+
+    def "deleteIssue should delete the issue if user is owner"() {
+        given:
+        long persId = 1L
+        long issueId = 1L
+        def personEntity = personEntity(id: persId)
+        def issueEntity = issueEntity(id: issueId, user: personEntity)
+
+        when:
+        issueService.deleteIssue(persId, issueId)
+
+        then:
+        1 * issueRepository.findById(issueId) >> Optional.of(issueEntity)
+        1 * issueRepository.delete(issueEntity)
+    }
+
+    def "closeIssue should close the issue if user is owner or employee or admin"() {
+        given:
+        long persId = 1L
+        long issueId = 1L
+        def personEntity = personEntity(id: persId, role: Role.EMPLOYEE)
+        def issueEntity = issueEntity(id: issueId, user: personEntity)
+
+        when:
+        issueService.closeIssue(persId, issueId)
+
+        then:
+        1 * personRepository.findById(persId) >> Optional.of(personEntity)
+        1 * issueRepository.findById(issueId) >> Optional.of(issueEntity)
+        1 * issueRepository.save(_) >> { IssueEntity issue ->
+            assert issue.getStatus() == Status.CLOSED
+            issueEntity
+        }
+    }
+
+    def "updateIssueWithAutogeneratedAnswer should update issue status and add comment"() {
+        given:
+        def incomingIssueDto = incomingIssueDto(id: 1L)
+        def issueEntity = issueEntity(id: 1L, status: Status.NEW)
+
+        when:
+        issueService.updateIssueWithAutogeneratedAnswer(incomingIssueDto)
+
+        then:
+        1 * issueRepository.findById(incomingIssueDto.id) >> Optional.of(issueEntity)
+        1 * issueRepository.save(_) >> { IssueEntity issue ->
+            assert issue.getStatus() == Status.AUTOGENERATED
+            issueEntity
+        }
+    }
+}

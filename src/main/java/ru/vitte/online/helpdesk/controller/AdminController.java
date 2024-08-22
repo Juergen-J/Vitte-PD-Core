@@ -19,15 +19,15 @@ public class AdminController {
 
     private final SecurityModuleMock securityModuleMock;
 
-    @PostMapping("/users")
-    public ResponseEntity<PersonDto> addUser(@RequestBody PersonDto userDto) {
-        if (securityModuleMock.isAdmin()) {
-            PersonDto createdUser = userService.addUser(userDto);
-            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
-    }
+//    @PostMapping("/users")
+//    public ResponseEntity<PersonDto> addUser(@RequestBody PersonDto userDto) {
+//        if (securityModuleMock.isAdmin()) {
+//            PersonDto createdUser = userService.addUser(userDto);
+//            return new ResponseEntity<>(createdUser, HttpStatus.CREATED);
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+//        }
+//    }
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {

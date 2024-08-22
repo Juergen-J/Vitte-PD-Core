@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="dashboard-header text-center">
+        <h1 class="display-4">Welcome, <span th:text="${username}">User</span>!</h1>
+        <div>
+            <a href="/issues/new" class="btn btn-primary">Добавить новое задание</a>
+            <a href="/logout" class="btn btn-danger">Выйти</a>
+        </div>
+    </header>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Мои задания</h3>
+            <div th:each="issue : ${issues}" class="card">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${issue.title}">Issue Title</h5>
+                    <p class="card-text">
+                        Статус: <span th:text="${issue.status}">Status</span><br>
+                        Создано: <span th:text="${issue.createdAt}">Created At</span><br>
+                        Обновлено: <span th:text="${issue.updatedAt}">Updated At</span>
+                    </p>
+                    <a th:href="@{/issues/{id}(id=${issue.id})}" class="btn btn-primary">Посмотреть</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-4">
+        <a href="/" class="btn btn-secondary">Back to Home</a>
+    </footer>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

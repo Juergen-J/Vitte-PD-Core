@@ -1,6 +1,7 @@
 package ru.vitte.online.helpdesk.ai.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.vitte.online.helpdesk.config.AIProperties;
 
@@ -13,6 +14,7 @@ import java.net.URL;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ChatGPTClient implements AIClient {
 
     private final AIProperties aiProperties;
@@ -27,7 +29,8 @@ public class ChatGPTClient implements AIClient {
             connection.setRequestProperty("Authorization", "Bearer " + aiProperties.apiKey());
             connection.setRequestProperty("Content-Type", "application/json");
 
-            String body = "{\"model\": \"" + aiProperties.model() + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
+            String cleanedPrompt = prompt.replaceAll("\\s+", " ").trim();
+            String body = "{\"model\": \"" + aiProperties.model() + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + cleanedPrompt + "\"}]}";
             connection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
             writer.write(body);

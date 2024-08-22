@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final static String DEFAULT_PASSWORD = "12345678";
     private final PersonRepository personRepository;
     private final KeycloakService keycloakService;
     private final PersonMapper mapper = PersonMapper.INSTANCE;
 
     @Override
     public PersonDto addUser(PersonDto userDto, String userId) {
-        // Сохранение пользователя в локальной базе данных
         final var savedUser = personRepository.save(mapper.mapPerson(userDto));
         log.debug("New user was successfully saved {}", savedUser);
 
@@ -31,7 +31,8 @@ public class UserServiceImpl implements UserService {
                 userDto.getEmail(),
                 userDto.getFirstName(),
                 userDto.getLastName(),
-                "12345678"
+                DEFAULT_PASSWORD,
+                userDto.getRole()
         );
 
         return mapper.mapPerson(savedUser);

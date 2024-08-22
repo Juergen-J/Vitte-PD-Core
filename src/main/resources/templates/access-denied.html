@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Добро пожаловать</title>
+    <title>Доступ запрещен</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -17,20 +17,13 @@
         .container {
             text-align: center;
         }
-        .btn {
-            display: block;
-            width: 100%;
-            max-width: 300px;
-            margin: 10px auto;
-        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1 class="display-4 mb-4">Добро пожаловать в наше приложение!</h1>
-    <a href="/dashboard" class="btn btn-primary btn-lg">Управление заявками</a>
-    <a href="/admin/dashboard" class="btn btn-secondary btn-lg">Перейти в кабинет администратора</a>
-    <a href="/logout" class="btn btn-danger btn-lg">Выйти</a>
+    <h1 class="display-4 text-danger mb-4">Доступ запрещен</h1>
+    <p class="lead" th:text="${errorMessage}"></p>
+    <a th:href="${homeLink}" class="btn btn-primary btn-lg mt-3">Вернуться на главную</a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

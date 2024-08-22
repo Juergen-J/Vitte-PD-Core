@@ -13,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.vitte.online.helpdesk.dto.PersonDto;
 import ru.vitte.online.helpdesk.entity.enums.Role;
 import ru.vitte.online.helpdesk.service.UserServiceImpl;
+import ru.vitte.online.helpdesk.utils.TokenExtractor;
 
 import java.util.List;
 
@@ -50,7 +51,13 @@ public class AdmController {
 
 
     @GetMapping("/admin/dashboard")
-    public String showAdminDashboard(Model model) {
+    public String showAdminDashboard(@AuthenticationPrincipal OidcUser oidcUser, Model model, RedirectAttributes redirectAttributes) {
+        var isAdmin = TokenExtractor.isEAdmin(oidcUser);
+        if(!isAdmin){
+            redirectAttributes.addFlashAttribute("errorMessage", "You do not have access to the admin dashboard.");
+
+            return "redirect:/error/access-denied";
+        }
         List<PersonDto> users = userService.getAllUsers();
         model.addAttribute("users", users);
         return "admin-dashboard";
@@ -63,6 +70,15 @@ public class AdmController {
         return "redirect:/admin/dashboard";
     }
 
+    @GetMapping("/error/access-denied")
+    public String accessDenied(Model model) {
+        String errorMessage = (String) model.asMap().get("errorMessage");
+        model.addAttribute("errorMessage", errorMessage);
+
+        model.addAttribute("homeLink", "/");
+
+        return "access-denied";
+    }
 
 
 }

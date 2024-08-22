@@ -1,5 +1,6 @@
 package ru.vitte.online.helpdesk.config;
 
+import lombok.RequiredArgsConstructor;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,17 +11,17 @@ import org.springframework.jms.core.JmsTemplate;
 
 @Configuration
 @EnableJms
+@RequiredArgsConstructor
 public class ActiveMQConfig {
-    private static final String BROKER_URL = "tcp://localhost:61616";
-    private static final String BROKER_USERNAME = "admin";
-    private static final String BROKER_PASSWORD = "admin";
+
+    private final ActiveMQProperties activeMQProperties;
 
     @Bean
     public ActiveMQConnectionFactory connectionFactory() {
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory();
-        factory.setBrokerURL(BROKER_URL);
-        factory.setUserName(BROKER_USERNAME);
-        factory.setPassword(BROKER_PASSWORD);
+        factory.setBrokerURL(activeMQProperties.url());
+        factory.setUserName(activeMQProperties.user());
+        factory.setPassword(activeMQProperties.password());
         return factory;
     }
 

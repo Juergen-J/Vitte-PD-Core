@@ -1,6 +1,7 @@
 package ru.vitte.online.helpdesk.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Controller;
@@ -19,6 +20,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class AdmController {
 
     private final UserServiceImpl userService;
@@ -55,7 +57,7 @@ public class AdmController {
         var isAdmin = TokenExtractor.isEAdmin(oidcUser);
         if(!isAdmin){
             redirectAttributes.addFlashAttribute("errorMessage", "You do not have access to the admin dashboard.");
-
+            log.error("Access denied");
             return "redirect:/error/access-denied";
         }
         List<PersonDto> users = userService.getAllUsers();

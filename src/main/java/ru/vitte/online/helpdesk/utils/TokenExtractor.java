@@ -38,11 +38,13 @@ public class TokenExtractor {
 
     public static boolean isEmployee(OidcUser oidcUser) {
         var roles = extractRoles(oidcUser);
+        log.debug("Roles: {}", roles);
         return roles.contains(new SimpleGrantedAuthority("ROLE_EMPLOYEE"));
     }
 
     public static boolean isEAdmin(OidcUser oidcUser) {
         var roles = extractRoles(oidcUser);
+        log.debug("Roles: {}", roles);
         return roles.contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
     }
 

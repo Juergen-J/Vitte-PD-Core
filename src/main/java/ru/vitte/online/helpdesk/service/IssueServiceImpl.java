@@ -18,6 +18,7 @@ import ru.vitte.online.helpdesk.repository.IssueRepository;
 import ru.vitte.online.helpdesk.repository.PersonRepository;
 import ru.vitte.online.helpdesk.service.api.IssueService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,10 +33,10 @@ public class IssueServiceImpl implements IssueService {
     private final IssueMapper issueMapper = Mappers.getMapper(IssueMapper.class);
 
     @Override
-    public IssueDto createIssue(long persId, IncomingIssueDto issueDto) {
+    public IssueDto createIssue(String email, IncomingIssueDto issueDto) {
         IssueEntity issueEntity = issueMapper.mapIssue(issueDto);
 
-        PersonEntity user = personRepository.findById(persId).orElseThrow(() -> new RuntimeException("User not found"));
+        PersonEntity user = personRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         issueEntity.setUser(user);
         issueEntity.setStatus(Status.NEW);
 
@@ -46,11 +47,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public IssueDto getIssueById(long persId, long issueId, boolean isEmployee) {
+    public IssueDto getIssueById(String email, long issueId, boolean isEmployee) {
         IssueEntity issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("Issue not found"));
 
         if (!isEmployee) {
-            if (!issue.getUser().getId().equals(persId)) {
+            if (!issue.getUser().getEmail().equals(email)) {
                 throw new RuntimeException("Access denied");
             }
         }
@@ -59,13 +60,14 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<IssueDto> getAllIssues(long persId, boolean isEmployee) {
-        List<IssueEntity> issues;
+    public List<IssueDto> getAllIssues(String email, boolean isEmployee) {
+        List<IssueEntity> issues = new ArrayList<>();
 
         if (isEmployee) {
-            issues = issueRepository.findByStatus(Status.NEW);
+            issues.addAll(issueRepository.findByStatus(Status.NEW));
+            issues.addAll(issueRepository.findByStatus(Status.IN_PROGRESS));
         } else {
-            PersonEntity user = personRepository.findById(persId).orElseThrow(() -> new RuntimeException("User not found"));
+            PersonEntity user = personRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
             issues = issueRepository.findByUser(user);
         }
 
@@ -75,13 +77,13 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public IssueDto updateIssue(long persId, long issueId, IncomingIssueDto issueDto) {
-        PersonEntity user = personRepository.findById(persId).orElseThrow(() -> new RuntimeException("User not found"));
+    public IssueDto updateIssue(String email, long issueId, boolean isEmployee, IncomingIssueDto issueDto) {
+        PersonEntity user = personRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         IssueEntity issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("Issue not found"));
 
-        if (user.getRole() == Role.EMPLOYEE) {
+        if (isEmployee) {
             issue.setEmployee(user);
-        } else if (issue.getUser().getId().equals(persId)) {
+        } else if (issue.getUser().getEmail().equals(email)) {
         } else {
             throw new RuntimeException("Access denied");
         }
@@ -94,10 +96,10 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void deleteIssue(long persId, long issueId) {
+    public void deleteIssue(String email, long issueId) {
         IssueEntity issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("Issue not found"));
 
-        if (issue.getUser().getId().equals(persId)) {
+        if (issue.getUser().getEmail().equals(email)) {
             issueRepository.delete(issue);
         } else {
             throw new RuntimeException("Access denied");
@@ -105,11 +107,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void closeIssue(Long persId, Long issueId) {
-        PersonEntity user = personRepository.findById(persId).orElseThrow(() -> new RuntimeException("User not found"));
+    public void closeIssue(String email, long issueId, boolean isEmployee) {
+        PersonEntity user = personRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         IssueEntity issue = issueRepository.findById(issueId).orElseThrow(() -> new RuntimeException("Issue not found"));
         Role userRole = user.getRole();
-        if (issue.getUser().getId().equals(persId) || userRole == Role.EMPLOYEE || userRole == Role.ADMIN) {
+        if (issue.getUser().getEmail().equals(email) || isEmployee || userRole == Role.ADMIN) {
             issue.setStatus(Status.CLOSED);
             issueRepository.save(issue);
         } else {

@@ -1,6 +1,8 @@
 package ru.vitte.online.helpdesk.ai.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.vitte.online.helpdesk.config.AIProperties;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,30 +12,28 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Component
+@RequiredArgsConstructor
 public class ChatGPTClient implements AIClient {
+
+    private final AIProperties aiProperties;
+
     @Override
     public String fetchAutoAnswer(String prompt) {
-        String url = "https://api.openai.com/v1/chat/completions";
-//        todo don't CheckIns
-        String apiKey = "";
-        String model = "gpt-3.5-turbo";
 
         try {
-            URL obj = new URL(url);
+            URL obj = new URL(aiProperties.url());
             HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
             connection.setRequestMethod("POST");
-            connection.setRequestProperty("Authorization", "Bearer " + apiKey);
+            connection.setRequestProperty("Authorization", "Bearer " + aiProperties.apiKey());
             connection.setRequestProperty("Content-Type", "application/json");
 
-            // The request body
-            String body = "{\"model\": \"" + model + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
+            String body = "{\"model\": \"" + aiProperties.model() + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]}";
             connection.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream());
             writer.write(body);
             writer.flush();
             writer.close();
 
-            // Response from ChatGPT
             BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
             String line;
 
@@ -44,7 +44,6 @@ public class ChatGPTClient implements AIClient {
             }
             br.close();
 
-            // calls the method to extract the message.
             return extractMessageFromJSONResponse(response.toString());
 
         } catch (IOException e) {

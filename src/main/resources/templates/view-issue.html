@@ -38,7 +38,7 @@
 <!--                    <br>-->
                     <div th:if="${comment.file != null}">
                         <strong>Прикрепленный файл:</strong>
-                        <a th:href="@{/files/{id}(id=${comment.file.id})}" th:text="${comment.file.fileName}">Файл</a>
+                        <a th:href="@{/files/{id}(id=${comment.file.id})}" th:text="${comment.file.name}">Файл</a>
                     </div>
                 </li>
             </ul>

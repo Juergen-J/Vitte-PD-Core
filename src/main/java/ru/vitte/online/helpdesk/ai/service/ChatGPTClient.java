@@ -29,6 +29,7 @@ public class ChatGPTClient implements AIClient {
             connection.setRequestProperty("Authorization", "Bearer " + aiProperties.apiKey());
             connection.setRequestProperty("Content-Type", "application/json");
 
+            prompt = "Ответ дай по русски:" + prompt;
             String cleanedPrompt = prompt.replaceAll("\\s+", " ").trim();
             String body = "{\"model\": \"" + aiProperties.model() + "\", \"messages\": [{\"role\": \"user\", \"content\": \"" + cleanedPrompt + "\"}]}";
             connection.setDoOutput(true);

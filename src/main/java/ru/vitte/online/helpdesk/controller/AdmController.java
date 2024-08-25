@@ -67,8 +67,12 @@ public class AdmController {
 
     @PostMapping("/admin/users/delete/{id}")
     public String deleteUser(@PathVariable Long id, RedirectAttributes redirectAttributes) {
-        userService.deleteUser(id);
-        redirectAttributes.addFlashAttribute("message", "Пользователь успешно удален!");
+        try {
+            userService.deleteUser(id);
+            redirectAttributes.addFlashAttribute("message", "Пользователь успешно удален!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ошибка при удалении пользователя: " + e.getMessage());
+        }
         return "redirect:/admin/dashboard";
     }
 
@@ -81,6 +85,42 @@ public class AdmController {
 
         return "access-denied";
     }
+
+    @GetMapping("/admin/users/edit/{id}")
+    public String showEditUserForm(@PathVariable Long id, Model model) {
+        PersonDto userDto = userService.getUserById(id);
+        if (userDto == null) {
+            return "redirect:/admin/dashboard";
+        }
+        model.addAttribute("user", userDto);
+        return "edit-user";
+    }
+
+    @PostMapping("/admin/users/edit/{id}")
+    public String updateUser(@PathVariable Long id,
+                             @RequestParam("firstName") String firstName,
+                             @RequestParam("lastName") String lastName,
+                             @RequestParam("email") String email,
+                             @RequestParam("role") Role role,
+                             RedirectAttributes redirectAttributes) {
+
+        PersonDto userDto = userService.getUserById(id);
+        if (userDto == null) {
+            return "redirect:/admin/dashboard";
+        }
+
+        userDto.setFirstName(firstName);
+        userDto.setLastName(lastName);
+        userDto.setEmail(email);
+        userDto.setRole(role);
+
+        userService.updateUser(userDto);
+
+        redirectAttributes.addFlashAttribute("message", "Пользователь успешно обновлен!");
+        return "redirect:/admin/dashboard";
+    }
+
+
 
 
 }

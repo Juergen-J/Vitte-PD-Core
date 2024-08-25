@@ -1,7 +1,9 @@
 package ru.vitte.online.helpdesk.service;
 
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.keycloak.admin.client.resource.UserResource;
@@ -15,12 +17,15 @@ import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class KeycloakService {
+
+    private final static String REALM_NAME = "Vitte";
 
     private final Keycloak keycloakAdmin;
 
-    public void createUser(String username, String email, String firstName, String lastName, String password, Role roleName) {
-        RealmResource realmResource = keycloakAdmin.realm("Vitte");
+    public String createUser(String username, String email, String firstName, String lastName, String password, Role roleName) {
+        RealmResource realmResource = keycloakAdmin.realm(REALM_NAME);
 
         UserRepresentation user = new UserRepresentation();
         user.setUsername(username);
@@ -32,7 +37,7 @@ public class KeycloakService {
         CredentialRepresentation credential = new CredentialRepresentation();
         credential.setType(CredentialRepresentation.PASSWORD);
         credential.setValue(password);
-        credential.setTemporary(false);
+        credential.setTemporary(true);
 
         user.setCredentials(Collections.singletonList(credential));
 
@@ -47,11 +52,46 @@ public class KeycloakService {
             RoleRepresentation role = realmResource.roles().get(roleName.toString()).toRepresentation();
             userResource.roles().realmLevel().add(Collections.singletonList(role));
 
-            System.out.println("Role assigned successfully");
+            log.info("Role assigned successfully");
+            return userId;
         } else {
-            System.err.println("Failed to create user: " + response.getStatusInfo());
+            log.info("Failed to create user: {}", response.getStatusInfo());
+            return null;
         }
+    }
 
-        response.close();
+
+    public void updateUser(String userId, String email, String firstName, String lastName, Role roleName) {
+        RealmResource realmResource = keycloakAdmin.realm(REALM_NAME);
+
+        UserResource userResource = realmResource.users().get(userId);
+        UserRepresentation user = userResource.toRepresentation();
+
+        user.setEmail(email);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+
+        userResource.update(user);
+
+        UserResource userResourceForRole = realmResource.users().get(userId);
+
+        RoleRepresentation role = realmResource.roles().get(roleName.toString()).toRepresentation();
+        userResourceForRole.roles().realmLevel().add(Collections.singletonList(role));
+
+        log.info("User updated successfully in Keycloak");
+    }
+
+    public void deleteUser(String keycloakUserId) {
+        RealmResource realmResource = keycloakAdmin.realm(REALM_NAME);
+
+        try {
+            UserResource userResource = realmResource.users().get(keycloakUserId);
+            userResource.remove();
+            log.info("User deleted successfully from Keycloak");
+        } catch (NotFoundException e) {
+            log.error("User not found in Keycloak: {}", keycloakUserId);
+        } catch (Exception e) {
+            log.error("An error occurred while deleting user in Keycloak: {}", e.getMessage());
+        }
     }
 }

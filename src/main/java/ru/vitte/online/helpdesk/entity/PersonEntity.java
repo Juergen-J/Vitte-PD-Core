@@ -26,4 +26,6 @@ public class PersonEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    private String keycloakUserId;
 }

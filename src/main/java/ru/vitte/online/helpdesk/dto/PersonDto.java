@@ -16,4 +16,6 @@ public class PersonDto {
     private String email;
 
     private Role role;
+
+    private String keycloakUserId;
 }

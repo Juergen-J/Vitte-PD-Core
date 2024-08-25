@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактировать пользователя</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- Меню навигации -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Центр поддержки</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Личный кабинет</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/abitur/" target="_blank">Абитуриенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact">Контакт</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/studentu/">Студенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://juergen-j.github.io/">О разработчике</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/about/">Об университете</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://e.muiv.ru/login/index.php">Электронный университет МУИВ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://yandex.ru/metro/moscow?scheme_id=sc34974011">Схема метрополитена</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Выход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Хлебные крошки -->
+<nav aria-label="breadcrumb" class="w-100">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item"><a href="/admin/dashboard">Админский дашборд</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Редактировать пользователя</li>
+    </ol>
+</nav>
+
+<div class="container">
+    <h1 class="text-center">Редактировать пользователя</h1>
+    <form th:action="@{/admin/users/edit/{id}(id=${user.id})}" method="post">
+        <div class="form-group">
+            <label for="firstName">Имя</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" th:value="${user.firstName}" required>
+        </div>
+        <div class="form-group">
+            <label for="lastName">Фамилия</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" th:value="${user.lastName}" required>
+        </div>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" name="email" th:value="${user.email}" required>
+        </div>
+        <div class="form-group">
+            <label for="role">Роль</label>
+            <select class="form-control" id="role" name="role" th:value="${user.role}" required>
+                <option value="ADMIN" th:selected="${user.role == 'ADMIN'}">Администратор</option>
+                <option value="EMPLOYEE" th:selected="${user.role == 'EMPLOYEE'}">Сотрудник</option>
+                <option value="USER" th:selected="${user.role == 'USER'}">Пользователь</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+    </form>
+    <div class="text-center mt-4">
+        <a href="/admin/dashboard" class="btn btn-secondary">Вернуться к обзору пользователей</a>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -7,6 +7,58 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
+
+<!-- Меню навигации -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Центр поддержки</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Личный кабинет</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/abitur/" target="_blank">Абитуриенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact">Контакт</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/studentu/">Студенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://juergen-j.github.io/">О разработчике</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/about/">Об университете</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://e.muiv.ru/login/index.php">Электронный университет МУИВ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://yandex.ru/metro/moscow?scheme_id=sc34974011">Схема метрополитена</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Выход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Хлебные крошки -->
+<nav aria-label="breadcrumb" class="w-100">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item"><a href="/admin/dashboard">Кабинет админа</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Добавить пользователя</li>
+    </ol>
+</nav>
+
 <div class="container">
     <h1 class="text-center">Добавить нового пользователя</h1>
     <form th:action="@{/admin/users/add}" method="post">
@@ -33,9 +85,10 @@
         <button type="submit" class="btn btn-primary">Добавить пользователя</button>
     </form>
     <div class="text-center mt-4">
-        <a href="/admin/dashboard" class="btn btn-secondary">Вернуться на главную</a>
+        <a href="/admin/dashboard" class="btn btn-secondary">Вернуться к обзору пользователей</a>
     </div>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

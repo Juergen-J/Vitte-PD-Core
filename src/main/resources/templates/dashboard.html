@@ -18,9 +18,60 @@
     </style>
 </head>
 <body>
+
+<!-- Меню навигации -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Центр поддержки</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Личный кабинет</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/abitur/" target="_blank">Абитуриенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact">Контакт</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/studentu/">Студенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://juergen-j.github.io/">О разработчике</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/about/">Об университете</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://e.muiv.ru/login/index.php">Электронный университет МУИВ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://yandex.ru/metro/moscow?scheme_id=sc34974011">Схема метрополитена</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Выход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Хлебные крошки -->
+<nav aria-label="breadcrumb" class="w-100">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Доска заявок</li>
+    </ol>
+</nav>
+
 <div class="container">
     <header class="dashboard-header text-center">
-        <h1 class="display-4">Welcome, <span th:text="${username}">User</span>!</h1>
+        <h1 class="display-4">Добро пожаловать, <span th:text="${username}">User</span>!</h1>
         <div>
             <a href="/issues/new" class="btn btn-primary">Добавить новое задание</a>
             <a href="/logout" class="btn btn-danger">Выйти</a>
@@ -36,7 +87,9 @@
                     <p class="card-text">
                         Статус: <span th:text="${issue.status}">Status</span><br>
                         Создано: <span th:text="${issue.createdAt}">Created At</span><br>
-                        Обновлено: <span th:text="${issue.updatedAt}">Updated At</span>
+                        Обновлено: <span th:text="${issue.updatedAt}">Updated At</span><br>
+                        Пользователь: <span th:text="${issue.user.firstName} + ' ' + ${issue.user.lastName}">User Name</span><br>
+                        Сотрудник: <span th:text="${issue.employee != null ? issue.employee.firstName + ' ' + issue.employee.lastName : 'Не назначен'}">Employee Name</span>
                     </p>
                     <a th:href="@{/issues/{id}(id=${issue.id})}" class="btn btn-primary">Посмотреть</a>
                 </div>
@@ -45,7 +98,7 @@
     </div>
 
     <footer class="text-center mt-4">
-        <a href="/" class="btn btn-secondary">Back to Home</a>
+        <a href="/" class="btn btn-secondary">На главную</a>
     </footer>
 </div>
 

@@ -18,10 +18,64 @@
     </style>
 </head>
 <body>
+
+<!-- Меню навигации -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/">Центр поддержки</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Главная</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/profile">Личный кабинет</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/abitur/" target="_blank">Абитуриенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/contact">Контакт</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/studentu/">Студенту</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://juergen-j.github.io/">О разработчике</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://www.muiv.ru/about/">Об университете</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://e.muiv.ru/login/index.php">Электронный университет МУИВ</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://yandex.ru/metro/moscow?scheme_id=sc34974011">Схема метрополитена</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout">Выход</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<!-- Хлебные крошки -->
+<nav aria-label="breadcrumb" class="w-100">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Главная</a></li>
+        <li class="breadcrumb-item"><a href="/dashboard">Доска заявок</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Просмотр задания</li>
+    </ol>
+</nav>
+
 <div class="container">
     <header class="issue-header text-center">
         <h1 th:text="${issue.title}">Issue Title</h1>
         <p>Статус: <span th:text="${issue.status}">Status</span></p>
+        <p>Пользователь: <span th:text="${issue.user.firstName} + ' ' + ${issue.user.lastName}">User Name</span></p>
+        <p>Сотрудник: <span th:text="${issue.employee != null ? issue.employee.firstName + ' ' + issue.employee.lastName : 'Не назначен'}">Employee Name</span></p>
     </header>
 
     <div class="card">
@@ -33,9 +87,6 @@
             <ul class="list-group">
                 <li th:each="comment : ${issue.issueComment}" class="list-group-item">
                     <strong>Комментарий:</strong> <span th:text="${comment.text}">Комментарий</span>
-<!--                    <br>-->
-<!--                    <small>Дата комментария: <span th:text="${comment.createdAt}">Дата</span></small>-->
-<!--                    <br>-->
                     <div th:if="${comment.file != null}">
                         <strong>Прикрепленный файл:</strong>
                         <a th:href="@{/files/{id}(id=${comment.file.id})}" th:text="${comment.file.name}">Файл</a>

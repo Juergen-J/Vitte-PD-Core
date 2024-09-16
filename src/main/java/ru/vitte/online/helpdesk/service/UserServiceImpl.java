@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.vitte.online.helpdesk.dto.PersonDto;
 import ru.vitte.online.helpdesk.entity.PersonEntity;
 import ru.vitte.online.helpdesk.mapper.PersonMapper;
+import ru.vitte.online.helpdesk.mq.NewUserPublisher;
 import ru.vitte.online.helpdesk.repository.PersonRepository;
 import ru.vitte.online.helpdesk.service.api.UserService;
 
@@ -20,6 +21,7 @@ public class UserServiceImpl implements UserService {
     private final static String DEFAULT_PASSWORD = "12345678";
     private final PersonRepository personRepository;
     private final KeycloakService keycloakService;
+    private final NewUserPublisher newUserPublisher;
     private final PersonMapper mapper = PersonMapper.INSTANCE;
 
     @Override
@@ -41,7 +43,9 @@ public class UserServiceImpl implements UserService {
             personRepository.save(savedUser);
         }
 
-        return mapper.mapPerson(savedUser);
+        PersonDto personDto = mapper.mapPerson(savedUser);
+        this.newUserPublisher.sendToTopic(personDto);
+        return personDto;
     }
 
 

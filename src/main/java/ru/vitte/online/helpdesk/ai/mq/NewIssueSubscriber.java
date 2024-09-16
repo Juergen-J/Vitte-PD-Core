@@ -12,7 +12,7 @@ import ru.vitte.online.helpdesk.dto.IssueDto;
 @RequiredArgsConstructor
 @Slf4j
 public class NewIssueSubscriber {
-    private static final String TOPIC_NAME = "new.user";
+    private static final String TOPIC_NAME = "new.issue";
     private final ObjectMapper objectMapper;
     private final AutoAnswerGenerator autoAnswerGenerator;
 

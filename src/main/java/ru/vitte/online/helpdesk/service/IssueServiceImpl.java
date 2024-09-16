@@ -14,6 +14,7 @@ import ru.vitte.online.helpdesk.entity.enums.Role;
 import ru.vitte.online.helpdesk.entity.enums.Status;
 import ru.vitte.online.helpdesk.mapper.IssueMapper;
 import ru.vitte.online.helpdesk.mq.NewIssuePublisher;
+import ru.vitte.online.helpdesk.mq.NotificationPublisher;
 import ru.vitte.online.helpdesk.repository.IssueRepository;
 import ru.vitte.online.helpdesk.repository.PersonRepository;
 import ru.vitte.online.helpdesk.service.api.IssueService;
@@ -30,6 +31,7 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final PersonRepository personRepository;
     private final NewIssuePublisher newIssuePublisher;
+    private final NotificationPublisher notificationPublisher;
     private final IssueMapper issueMapper = Mappers.getMapper(IssueMapper.class);
 
     @Override
@@ -94,6 +96,7 @@ public class IssueServiceImpl implements IssueService {
         issue.getIssueComment().add(issueMapper.mapIssueComment(issueDto.getIssueComment()));
 
         IssueEntity updatedIssue = issueRepository.save(issue);
+        this.notificationPublisher.sendToTopic(issueMapper.mapToNotificationDto(updatedIssue));
         return issueMapper.mapIssue(updatedIssue);
     }
 
